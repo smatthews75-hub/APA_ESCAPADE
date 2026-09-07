@@ -1,0 +1,36 @@
+Data Type Keyword       | Numeric Range                                                        | Memory Size  | Required Library | Concise Summary of Use Cases
+------------------------|----------------------------------------------------------------------|--------------|------------------|----------------------------------------------------------------------------------------
+bool                    | 0 to 1 (false / true)                                                | 1 byte       | Built-in         | Boolean flags, visited state arrays (BFS/DFS), bit masks.
+char                    | -128 to 127 or 0 to 255 (platform dependent)                         | 1 byte       | Built-in         | Single ASCII character processing, small array values.
+signed char             | -128 to 127                                                          | 1 byte       | Built-in         | Small signed integer counters, saving memory in large grid arrays.
+unsigned char           | 0 to 255                                                             | 1 byte       | Built-in         | Unsigned raw byte manipulation, 8-bit values.
+short                   | -32,768 to 32,767 (-2^15 to 2^15 - 1)                                | 2 bytes      | Built-in         | Small integers, array optimization when N <= 30,000.
+unsigned short          | 0 to 65,535 (0 to 2^16 - 1)                                          | 2 bytes      | Built-in         | Non-negative 16-bit counters, bitmasking up to 16 states.
+int                     | -2,147,483,648 to 2,147,483,647 (~ -2.14e9 to 2.14e9)                | 2 to 4 bytes | Built-in         | Default choice for loop counters, array indices, nodes, values under 10^9.
+unsigned int            | 0 to 4,294,967,295 (~ 0 to 4.29e9)                                   | 2 to 4 bytes | Built-in         | 32-bit bitmasking, counters where negative values are impossible.
+long                    | -2^31 to 2^31-1 (32-bit) OR -2^63 to 2^63-1 (64-bit Linux)           | 4 to 8 bytes | Built-in         | Platform-dependent integer size (avoid in CP due to OS portability issues).
+unsigned long           | 0 to 2^32-1 (32-bit) OR 0 to 2^64-1 (64-bit Linux)                   | 4 to 8 bytes | Built-in         | Platform-dependent unsigned integer size (avoid in CP).
+long long               | -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 (~+/-9.22e18)| 8 bytes      | Built-in         | Standard CP choice for large values, prefix sums, DP states, intermediate products.
+unsigned long long      | 0 to 18,446,744,073,709,551,615 (~ 0 to 1.84e19)                     | 8 bytes      | Built-in         | 64-bit bitmasks, rolling string hashing (free modulo 2^64 via overflow).
+int8_t                  | -128 to 127                                                          | 1 byte       | <cstdint>        | Fixed exact 8-bit signed integer across all compilers.
+uint8_t                 | 0 to 255                                                             | 1 byte       | <cstdint>        | Fixed exact 8-bit unsigned byte value.
+int16_t                 | -32,768 to 32,767                                                    | 2 bytes      | <cstdint>        | Fixed exact 16-bit signed integer.
+uint16_t                | 0 to 65,535                                                          | 2 bytes      | <cstdint>        | Fixed exact 16-bit unsigned integer.
+int32_t                 | -2,147,483,648 to 2,147,483,647                                      | 4 bytes      | <cstdint>        | Fixed exact 32-bit signed integer.
+uint32_t                | 0 to 4,294,967,295                                                   | 4 bytes      | <cstdint>        | Fixed exact 32-bit unsigned integer.
+int64_t                 | -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807              | 8 bytes      | <cstdint>        | Fixed exact 64-bit signed integer.
+uint64_t                | 0 to 18,446,744,073,709,551,615                                      | 8 bytes      | <cstdint>        | Fixed exact 64-bit unsigned integer.
+size_t                  | 0 to 2^32-1 (32-bit) OR 0 to 2^64-1 (64-bit)                         | 4 to 8 bytes | <cstddef>        | Array indexing, size of containers (.size()), memory allocation offsets.
+ptrdiff_t               | -2^31 to 2^31-1 (32-bit) OR -2^63 to 2^63-1 (64-bit)                 | 4 to 8 bytes | <cstddef>        | Pointer arithmetic differences, iterator distance calculation.
+intmax_t                | -2^63 to 2^63-1 (or larger if compiler supported)                    | 8 to 16 bytes| <cstdint>        | Guaranteed largest signed integer type available on target compiler.
+uintmax_t               | 0 to 2^64-1 (or larger if compiler supported)                        | 8 to 16 bytes| <cstdint>        | Guaranteed largest unsigned integer type available on target compiler.
+__int128_t              | ~ -1.70e38 to 1.70e38 (-2^127 to 2^127 - 1)                          | 16 bytes     | Built-in (GCC)   | Non-standard GCC extension; 64-bit multiplication modulo m, geometry cross products.
+__uint128_t             | 0 to 3.40e38 (0 to 2^128 - 1)                                        | 16 bytes     | Built-in (GCC)   | Non-standard GCC extension; huge bit manipulation, 128-bit modular arithmetic.
+float                   | +/- 1.18e-38 to +/- 3.40e38 (~6-7 decimal precision digits)          | 4 bytes      | Built-in         | Low-precision floating-point numbers (avoid in CP due to precision issues).
+double                  | +/- 2.23e-308 to +/- 1.79e308 (~15-17 decimal precision digits)      | 8 bytes      | Built-in         | Standard floating-point choice for geometry, probabilities, averages.
+long double             | +/- 3.36e-4932 to +/- 1.18e4932 (~18-19 decimal precision digits)    | 10 - 16 bytes| Built-in         | Extended precision floating point; high precision geometry, avoiding log/exp error.
+std::float16_t          | +/- 6.10e-5 to +/- 65504 (~3.3 decimal precision digits)             | 2 bytes      | <stdfloat>       | C++23 16-bit IEEE 754 half precision float; memory-constrained tasks.
+std::bfloat16_t         | +/- 1.17e-38 to +/- 3.39e38 (~2.4 decimal precision digits)          | 2 bytes      | <stdfloat>       | C++23 Brain Floating Point format; machine learning & reduced-mantissa calculations.
+std::float32_t          | +/- 1.18e-38 to +/- 3.40e38 (~7 decimal precision digits)            | 4 bytes      | <stdfloat>       | C++23 fixed 32-bit IEEE 754 single-precision floating point.
+std::float64_t          | +/- 2.23e-308 to +/- 1.79e308 (~15-17 decimal precision digits)      | 8 bytes      | <stdfloat>       | C++23 fixed 64-bit IEEE 754 double-precision floating point.
+std::float128_t         | +/- 3.36e-4932 to +/- 1.18e4932 (~34 decimal precision digits)       | 16 bytes     | <stdfloat>       | C++23 quad-precision floating point; extreme floating point precision requirements.
