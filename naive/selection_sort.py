@@ -16,9 +16,19 @@ def selection_sort_desc(A:list):
         A[j], A[most] = A[most], A[j]
     return A
 
+def selection_autism(A:list):
+    N = len(A)
+    for j in range(N-1, 0, -1):
+        idx = 0
+        for i in range(1, j + 1):
+            if A[i] < A[idx] : idx = i
+        A[j], A[idx] = A[idx], A[j]
+    return A
+
 if __name__ == "__main__":
     from random import randint
     A = [randint(10,99) for _ in range(10)]
-    print(A)
+    print(A, "\n")
     print(selection_sort_asc(A.copy()))
     print(selection_sort_desc(A.copy()))
+    print(selection_autism(A.copy()))

@@ -43,7 +43,3 @@ for val in ClassifyPoints(points, A, B).values():
     elif val == 0: mid += 1
 
 print(left, right, mid)
-# print(left, end="")
-# print(right, end="")
-# print(mid)
-# C = list(map(float, input().split()))
