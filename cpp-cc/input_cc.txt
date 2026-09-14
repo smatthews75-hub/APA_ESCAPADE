@@ -1,0 +1,888 @@
+C++ COMPETITIVE PROGRAMMING INPUT / PARSING CHEATSHEET
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+1. SINGLE / MULTIPLE TOKENS
+
+    int n;
+    cin >> n;
+
+    int a, b, c;
+    cin >> a >> b >> c;
+
+WHEN: Fixed number of whitespace-separated values.
+
+INPUT: 10 20 30
+
+Also works if formatted as:
+
+    10
+    20
+    30
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+2. KNOWN-SIZE ARRAY / VECTOR
+
+    int n;
+    cin >> n;
+
+    vector<int> a(n);
+
+    for (int& x : a) {cin >> x};
+
+WHEN: Problem gives N, followed by N values.
+
+INPUT: 5 10 20 30 40 50
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+3. N VALUES, BUT YOU DON’T NEED TO STORE THEM
+
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < n; ++i) {
+        int x;
+        cin >> x;
+
+        // process x
+    }
+
+WHEN: Only one-pass processing is required.
+
+BENEFIT: O(1) extra memory instead of O(N).
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+4. READ UNTIL EOF
+
+    int x;
+
+    while (cin >> x) {
+        // process x
+    }
+
+WHEN: The problem does NOT provide N/T and input continues until EOF.
+
+INPUT: 1 2 3 4 5 6
+
+Reads: 1 2 3 4 5 6
+
+IMPORTANT: Do not use getline() merely because the values appear on one
+line. cin >> naturally crosses line boundaries.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+5. READ STRINGS / WORDS
+
+    string s;
+    cin >> s;
+
+WHEN: String contains no spaces.
+
+INPUT: hello
+
+For multiple words:
+
+    string a, b, c;
+    cin >> a >> b >> c;
+
+INPUT: hello competitive programming
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+6. READ A WHOLE LINE
+
+    string s;
+    getline(cin, s);
+
+WHEN: Spaces are part of the data and the entire line matters.
+
+INPUT: hello competitive programming
+
+RESULT: s == “hello competitive programming”
+
+Do NOT use cin >> s here; it would only read “hello”.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+7. THE cin >> + getline() TRAP
+
+BAD / SURPRISING:
+
+    int n;
+    cin >> n;
+
+    string s;
+    getline(cin, s);
+
+INPUT: 5 hello world
+
+RESULT: n = 5 s = “”
+
+WHY: cin >> n leaves the newline in the input stream. getline()
+immediately consumes that newline.
+
+FIX:
+
+    int n;
+    cin >> n;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    string s;
+    getline(cin, s);
+
+WHEN: You genuinely need to switch from token extraction to line
+extraction.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+8. DISCARD ONE CHARACTER / NEWLINE
+
+    cin.ignore();
+
+WHEN: You KNOW exactly one unwanted character remains.
+
+Example: cin >> n; cin.ignore(); getline(cin, s);
+
+PREFERRED GENERAL FORM:
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+WHEN: You want to discard everything through the next newline.
+
+BEST PRACTICE: Use the long form when input before the newline might
+contain more than one character.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+9. getline() + stringstream
+
+    string line;
+    getline(cin, line);
+
+    stringstream ss(line);
+
+    int x;
+    while (ss >> x) {
+        // process x
+    }
+
+WHEN: The LINE itself matters and then you want to parse tokens inside
+it.
+
+GOOD USE CASES: - variable-length records, one record per line - each
+line has a different number of values - need to preserve line
+boundaries - custom line-oriented input format
+
+LESS GOOD: Normal “N integers follow” CP input.
+
+For normal numeric input, simply use cin >> x.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+10. STRINGSTREAM: MIXED TYPES
+
+    string line;
+    getline(cin, line);
+
+    stringstream ss(line);
+
+    string name;
+    int age;
+    double score;
+
+    ss >> name >> age >> score;
+
+WHEN: One line contains several different token types.
+
+INPUT: Alice 21 98.5
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+11. READ N LINES
+
+    int n;
+    cin >> n;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (int i = 0; i < n; ++i) {
+        string s;
+        getline(cin, s);
+        // process s
+    }
+
+WHEN: The next N records are actual lines, potentially containing
+spaces.
+
+If each line is just one word/token: use cin >> s instead.
+
+12. MATRIX / GRID OF INTEGERS
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> a(n, vector<int>(m));
+
+    for (auto& row : a)
+        for (int& x : row)
+            cin >> x;
+
+WHEN: N x M numeric grid.
+
+IMPORTANT: You do not need to care where each row’s newline occurs.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+13. GRID OF CHARACTERS
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<string> grid(n);
+
+    for (string& row : grid)
+        cin >> row;
+
+INPUT: 3 5 ..#.. .#… ##…
+
+WHEN: Each row has no spaces between cells.
+
+ADVANTAGE: grid[i][j] directly gives the cell.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+14. GRID WITH SPACES BETWEEN CELLS
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<char>> grid(n, vector<char>(m));
+
+    for (auto& row : grid)
+        for (char& c : row)
+            cin >> c;
+
+WHEN: Input is:
+
+    3 3
+    . . #
+    # . .
+    . # #
+
+cin >> char skips whitespace automatically.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+15. PAIRS / EDGES
+
+    int m;
+    cin >> m;
+
+    vector<pair<int,int>> edges(m);
+
+    for (auto& [u, v] : edges)
+        cin >> u >> v;
+
+WHEN: Graph edges, coordinates, intervals, relationships, etc.
+
+Example: 1 5 2 8 4 10
+
+16. TRIPLES / STRUCTS
+
+    struct Point {
+        int x, y;
+    };
+
+    int n;
+    cin >> n;
+
+    vector<Point> p(n);
+
+    for (auto& [x, y] : p)
+        cin >> x >> y;
+
+WHEN: Input maps naturally to a small record/struct.
+
+Alternative:
+
+    for (auto& point : p)
+        cin >> point.x >> point.y;
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+17. T TEST CASES
+
+    int t;
+    cin >> t;
+
+    while (t--) {
+        solve();
+    }
+
+WHEN: The first input value is explicitly the number of test cases.
+
+Typical:
+
+    3
+    ...
+    ...
+    ...
+
+BEST PRACTICE: Do not invent t if the problem does not provide it.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+18. T TEST CASES + VECTORS
+
+    void solve() {
+        int n;
+        cin >> n;
+
+        vector<int> a(n);
+
+        for (int& x : a)
+            cin >> x;
+
+        // solve
+    }
+
+    int main() {
+        ios::sync_with_stdio(false);
+        cin.tie(nullptr);
+
+        int t;
+        cin >> t;
+
+        while (t--)
+            solve();
+    }
+
+WHEN: Very common Codeforces / HackerRank / ICPC style format.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+19. T TEST CASES + STRINGS WITH SPACES
+
+    int t;
+    cin >> t;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    while (t--) {
+        string s;
+        getline(cin, s);
+
+        // process whole line
+    }
+
+WHEN: Each test case is one complete line.
+
+CAUTION: Only use the ignore() here if the format really requires
+getline().
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+20. OPTIONAL / UNKNOWN-LENGTH TOKEN SEQUENCE
+
+    vector<int> a;
+
+    int x;
+    while (cin >> x)
+        a.push_back(x);
+
+WHEN: Entire remaining input is one sequence of integers.
+
+This is essentially: “read all remaining tokens until EOF.”
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+21. READ A LINE UNTIL EOF
+
+    string line;
+
+    while (getline(cin, line)) {
+        // process one complete line
+    }
+
+WHEN: The input is fundamentally line-oriented.
+
+IMPORTANT: getline() preserves spaces inside the line. It removes the
+newline itself.
+
+22. TOKENIZE A LINE WITHOUT stringstream
+
+For performance-sensitive/custom parsing:
+
+    string s;
+    getline(cin, s);
+
+    int n = s.size();
+
+    for (int i = 0; i < n; ) {
+        while (i < n && s[i] == ' ')
+            ++i;
+
+        int x = 0;
+
+        while (i < n && isdigit(s[i])) {
+            x = x * 10 + (s[i] - '0');
+            ++i;
+        }
+
+        // use x
+    }
+
+WHEN: Rarely needed. Use when parsing itself is performance-critical or
+the grammar is custom.
+
+EXPERT NOTE: Do not manually tokenize normal CP input just to look
+clever. cin >> / stringstream are usually clearer.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+23. COMMA / CUSTOM DELIMITERS
+
+Example input: 10,20,30,40
+
+Simple approach:
+
+    string line;
+    getline(cin, line);
+
+    for (char& c : line)
+        if (c == ',')
+            c = ' ';
+
+    stringstream ss(line);
+
+    int x;
+    while (ss >> x) {
+        // process x
+    }
+
+WHEN: Input uses punctuation as separators.
+
+Alternative: manually parse characters if the grammar is more complex.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+24. NEGATIVE NUMBERS
+
+    int x;
+    cin >> x;
+
+Works normally:
+
+    -10 -20 30
+
+No special parsing required.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+25. LONG LONG
+
+    long long x;
+    cin >> x;
+
+WHEN: Constraints / arithmetic require 64-bit integers.
+
+Do not unnecessarily use long long for every variable.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+26. DOUBLE / DECIMAL
+
+    double x;
+    cin >> x;
+
+INPUT: 3.14159 -0.5 10.0
+
+For most CP numeric problems, read directly into the intended type.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+27. CHAR INPUT
+
+    char c;
+    cin >> c;
+
+WHEN: Individual non-whitespace characters.
+
+IMPORTANT: cin >> c skips whitespace.
+
+If you need the next raw character INCLUDING whitespace:
+
+    char c = cin.get();
+
+This is uncommon in ordinary CP.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+28. cin.get()
+
+    char c;
+    c = cin.get();
+
+WHEN: You need exactly the next character from the stream.
+
+Unlike operator>> for char, get() does NOT skip whitespace.
+
+Useful for: - character-level parsers - custom grammars - detecting
+newlines/spaces explicitly
+
+Usually unnecessary for standard CP input.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+29. cin.peek()
+
+    char c = cin.peek();
+
+WHEN: You want to inspect the next character WITHOUT consuming it.
+
+Useful for: - custom parsers - deciding what kind of token comes next
+
+Rare in normal CP.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+30. cin.ignore(count, delimiter)
+
+    cin.ignore(1000, '\n');
+
+General form:
+
+    cin.ignore(count, delimiter);
+
+WHEN: Discard input until either: - count characters have been
+discarded, OR - delimiter is encountered.
+
+Most common:
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+Meaning: “Throw away everything until the next newline.”
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+31. std::ws + getline()
+
+    string s;
+    getline(cin >> ws, s);
+
+WHEN: You want to consume leading whitespace before reading a line.
+
+Example: int n; cin >> n; getline(cin >> ws, s);
+
+IMPORTANT: ws consumes ALL leading whitespace, potentially including
+multiple newlines.
+
+This is NOT always equivalent to ignore(…, ‘’).
+
+Use it when leading whitespace should be ignored. Use ignore(…, ‘’) when
+you specifically want to finish the current line and move to the next
+line.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+32. READ WORDS UNTIL A SENTINEL
+
+    string s;
+
+    while (cin >> s && s != "END") {
+        // process s
+    }
+
+WHEN: Input terminates using a special token rather than EOF.
+
+For integers:
+
+    int x;
+
+    while (cin >> x && x != -1) {
+        // process x
+    }
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+33. READ MULTIPLE RECORDS UNTIL EOF
+
+    string name;
+    int score;
+
+    while (cin >> name >> score) {
+        // process record
+    }
+
+WHEN: Each record has a fixed token structure and there is no N.
+
+Example: Alice 90 Bob 85 Charlie 92
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+34. MIXED TOKEN + LINE INPUT
+
+Example: 3 Alice loves C++ Bob loves Python Charlie loves Rust
+
+Use:
+
+    int n;
+    cin >> n;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (int i = 0; i < n; ++i) {
+        string s;
+        getline(cin, s);
+        // process
+    }
+
+WHEN: Header is token-based, records are line-based.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+35. VARIABLE-LENGTH LINE RECORDS
+
+Example: Alice 10 20 30 Bob 5 8 Charlie 100 200 300 400
+
+Use:
+
+    string line;
+
+    while (getline(cin, line)) {
+        stringstream ss(line);
+
+        string name;
+        ss >> name;
+
+        vector<int> values;
+        int x;
+
+        while (ss >> x)
+            values.push_back(x);
+
+        // process this record
+    }
+
+WHEN: Each line has its own variable number of fields.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+36. READ AN ENTIRE INPUT FILE INTO A STRING
+
+    string input(
+        (istreambuf_iterator<char>(cin)),
+        istreambuf_iterator<char>()
+    );
+
+WHEN: Very specialized parsing / text-processing problems.
+
+Usually overkill for ordinary CP.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+37. FASTEST COMMON APPROACH: DON’T OVER-PARSE
+
+If input says:
+
+    N
+    N integers
+
+Do:
+
+    int n;
+    cin >> n;
+
+    vector<int> a(n);
+
+    for (int& x : a)
+        cin >> x;
+
+NOT:
+
+    getline()
+    -> string
+    -> stringstream
+    -> string
+    -> stoi()
+    -> int
+
+WHEN: Always prefer the direct approach when line boundaries don’t
+matter.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+38. INPUT + OUTPUT TEMPLATE
+
+    #include <bits/stdc++.h>
+    using namespace std;
+
+    using ll = long long;
+
+    void solve() {
+        // read
+        // compute
+        // output
+    }
+
+    int main() {
+        ios::sync_with_stdio(false);
+        cin.tie(nullptr);
+
+        int t = 1;
+        // cin >> t;
+
+        while (t--)
+            solve();
+
+        return 0;
+    }
+
+WHEN: General-purpose CP template.
+
+NOTE: Uncomment cin >> t ONLY when the problem actually provides T.
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+39. COMMON ANTI-PATTERNS
+
+AVOID:
+
+    string x;
+    cin >> x;
+    int n = stoi(x);
+
+WHEN: Input is already numeric.
+
+USE:
+
+    int n;
+    cin >> n;
+
+AVOID:
+
+    getline(cin, line);
+    stringstream ss(line);
+
+WHEN: The problem simply gives N integers.
+
+USE:
+
+    cin >> x;
+
+AVOID:
+
+    cin.ignore();
+
+WHEN: You are not certain exactly one character should be discarded.
+
+USE:
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+when your actual intention is: “discard the rest of this line.”
+
+AVOID: manually caring about whether integers are on one line or five
+lines.
+
+USE: cin >> x;
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+40. THE EXPERT DECISION TREE
+
+Question 1: Is this input fundamentally whitespace-separated tokens?
+
+    YES -> cin >> variable
+
+Question 2: Does the entire line have semantic meaning?
+
+    YES -> getline()
+
+Question 3: Do I need to parse tokens inside that line?
+
+    YES -> getline() + stringstream
+
+Question 4: Is the format custom enough that stringstream is
+insufficient?
+
+    YES -> manual character parsing
+
+Question 5: Is the input known-size?
+
+    YES -> read exactly that many values.
+
+Question 6: Is there no count and input continues?
+
+    YES -> while (cin >> x) / while (getline(...))
+
+Question 7: Did I switch from cin >> to getline?
+
+    YES -> think carefully about the leftover newline.
+
+41. PERFORMANCE / STYLE RULES
+
+1.  Prefer direct typed extraction:
+
+        cin >> int_value;
+
+2.  Don’t convert numeric input: string -> stoi -> int
+
+    unless the string representation is actually needed.
+
+3.  Use getline only when line boundaries matter.
+
+4.  Use stringstream for line-local tokenization.
+
+5.  Use ios::sync_with_stdio(false) and cin.tie(nullptr) for normal
+    high-volume CP I/O.
+
+6.  Don’t manually parse input unless the problem warrants it.
+
+7.  Don’t optimize input parsing before knowing input size or
+    encountering an actual bottleneck.
+
+8.  Treat whitespace as insignificant when using operator>>.
+
+9.  Treat newlines as meaningful only when the problem’s format makes
+    them meaningful.
+
+10. Read directly into the data structure whenever practical.
+
+11. QUICK REFERENCE
+
+INPUT SHAPE USUAL TOOL
+
+one integer cin >> n N integers cin >> x in loop N strings cin >> s in
+loop matrix nested cin >> pairs / edges cin >> u >> v word cin >> s
+sentence getline(cin, s) N sentences getline() in loop integer +
+sentence cin >> n; ignore(); getline() line of variable integers
+getline + stringstream records until EOF while (cin >> …) lines until
+EOF while (getline(…)) custom delimiters getline + stringstream custom
+grammar manual parser raw character cin.get() peek next character
+cin.peek() discard rest of line cin.ignore(…, ‘’) ignore leading
+whitespace getline(cin >> ws, s) sentinel-terminated input while (cin >>
+x && x != sentinel)
+
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+43. GOLDEN RULE
+
+For CP, start with the simplest parser that matches the DATA MODEL.
+
+    Tokens?       cin >>
+    Lines?        getline()
+    Tokens in line?
+                  getline() + stringstream
+    Weird grammar?
+                  custom parser
+
+Do not parse the presentation when the problem only cares about the
+underlying sequence of values.
+
+The most common expert CP input operation is still simply:
+
+    cin >> x;
+
+References: CP-Algorithms is a major competitive-programming reference.
+Its problem implementations routinely use direct typed extraction for
+structured input, while custom string parsing is reserved for genuinely
+string-oriented problems.
