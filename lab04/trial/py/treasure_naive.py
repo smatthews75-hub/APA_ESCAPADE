@@ -1,5 +1,4 @@
 import sys
-import math
 from collections import deque
 
 sys.setrecursionlimit(200005)
@@ -22,8 +21,7 @@ def build_result(pool, leaf_node):
 
         visited_sequence.append(idx)
 
-        if parent != -1:
-            jump_sequence.append(jump)
+        if parent != -1: jump_sequence.append(jump)
 
         cur = parent
 
@@ -50,22 +48,20 @@ def max_treasure_DFS_stack(treasures_, options_):
 
     The stack stores indices into pool rather than full states.
     """
-    pool = [
-        (0, treasures_[0], -1, 0)
-    ]
+    # treasure_idx, total, parent, jump_action
+    pool = [(0, treasures_[0], -1, 0)]
+    best_leaf = -1 # start with none
+    best_total = -sys.maxsize # start with minimal
 
-    best_leaf = -1
-    best_total = -sys.maxsize
-
-    # Python list is the natural stack.
-    traversal_stack = [0]
+    # Python list is naturally stack.
+    traversal_stack = [0] # pool index
 
     n = len(treasures_)
 
     while traversal_stack:
-        current = traversal_stack.pop()
+        current_pool_idx = traversal_stack.pop()
 
-        current_idx, current_total, _, _ = pool[current]
+        current_idx, current_total, _, _ = pool[current_pool_idx]
 
         has_next = False
 
@@ -80,13 +76,13 @@ def max_treasure_DFS_stack(treasures_, options_):
             # Now it is guaranteed to have next jumps
             has_next = True
 
-            # Record the next step as a child of current.
+            # Record the next step as a child of current_pool_idx.
             # O(1), no path copy.
             pool.append((
-                next_index,
-                current_total + treasures_[next_index],
-                current,
-                jump
+                next_index, # next index to be checked, the child
+                current_total + treasures_[next_index], # next treasure size
+                current_pool_idx, # record parent
+                jump # record teh jump action
             ))
 
             traversal_stack.append(len(pool) - 1)
@@ -96,7 +92,7 @@ def max_treasure_DFS_stack(treasures_, options_):
             best_leaf, best_total = update_best_leaf(
                 best_leaf,
                 best_total,
-                current,
+                current_pool_idx,
                 current_total
             )
 

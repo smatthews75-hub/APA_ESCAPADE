@@ -80,10 +80,10 @@ void solve() {
     vector<int> options_(opt_);
     for (int& x : options_) cin >> x;
 
-    Result resBFSqueue = max_treasure_BFS_queue(treasures_, options_); 
-    Result resBFSrecursive = max_treasure_BFS_recursive(treasures_, options_);
     Result resDFSstack = max_treasure_DFS_stack(treasures_, options_);
     Result resDFSrecursive = max_treasure_DFS_recursive(treasures_, options_);
+    Result resBFSqueue = max_treasure_BFS_queue(treasures_, options_); 
+    Result resBFSrecursive = max_treasure_BFS_recursive(treasures_, options_);
 
 
     auto print_res = [&treasures_](Result &res){
@@ -96,13 +96,13 @@ void solve() {
         cout << "Max treasures : " << res.total;
         cout << "\n";
     };
-    print_res(resBFSqueue);
-    cout << "========================================================\n";
-    print_res(resBFSrecursive);
-    cout << "========================================================\n";
     print_res(resDFSstack);
     cout << "========================================================\n";
     print_res(resDFSrecursive);
+    cout << "========================================================\n";
+    print_res(resBFSqueue);
+    cout << "========================================================\n";
+    print_res(resBFSrecursive);
 }
 
 int main() {
@@ -130,6 +130,8 @@ Result max_treasure_DFS_stack(const vector<int> &treasures_, const vector<int> &
     stack<int> traversal_stack; // stack of pool indices, not full states
     traversal_stack.push(0);
 
+    int n_ = (int)treasures_.size();
+
     while (!traversal_stack.empty()) {
         int current = traversal_stack.top();
         traversal_stack.pop();
@@ -138,7 +140,7 @@ Result max_treasure_DFS_stack(const vector<int> &treasures_, const vector<int> &
         for (int jump : options_) {
             int next_index = pool[current].idx + jump;
             // Skip out of bound next jumps
-            if (next_index  < 0 || next_index >= (int)treasures_.size()) {continue;}
+            if (next_index  < 0 || next_index >= n_) {continue;}
             // Now its guaranteed to have next jumps
             has_next = true;
             // Record the next step as a child of "current" - O(1), no path copy
