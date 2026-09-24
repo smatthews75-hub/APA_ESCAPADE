@@ -8,7 +8,7 @@ def DFS(N, pos, val, path, A):
 
     yield from DFS(N, pos + 1, new_val, new_path, A)
     if pos + 1 < N:
-        yield from DFS(N, pos + 2, new_val, new_path, A)
+        yield from DFS(N, pos + 3, new_val, new_path, A)
 
 N = int(input())
 A = list(map(int, input().split()))
