@@ -1,14 +1,14 @@
-def topo_sort_dfs(G, V):
+def topo_sort_dfs(G, C_v):
     visited = set()
     result = []
 
     # (i) Sort all vertices by cost c_v ascending for the outer loop
-    sorted_vertices = sorted(G.keys(), key=lambda v: V[v])
+    sorted_vertices = sorted(G.keys(), key=lambda v: C_v[v])
 
     def dfs_visit(v):
         visited.add(v)
-        # (ii) Sort neighbors by cost c_u ascending before exploring
-        sorted_neighbors = sorted(G.get(v, []), key=lambda u: V[u])
+        # (ii) Sort neighbors by cost c_v ascending before exploring
+        sorted_neighbors = sorted(G.get(v, []), key=lambda u: C_v[u])
         for u in sorted_neighbors:
             if u not in visited:
                 dfs_visit(u)
@@ -20,10 +20,17 @@ def topo_sort_dfs(G, V):
 
     return result[::-1]  # Reverse post-order to get topological order
 
+# G = {
+#     "3":["1", "4"],
+#     "2":["1"]
+# }
+# C_v = {"1":2, "2":0, "3":0, "4":1} # how many edges going "in" to each node at the surface of the graph
+
 G = {
     "3":["1", "4"],
     "2":["1"]
 }
-V = {"1":2, "2":0, "3":0, "4":1} # how many edges going "in" to each node at the surface of the graph
+C_v = {"1":2, "2":0, "3":0, "4":1} # how many edges going "in" to each node at the surface of the graph
 
-print(topo_sort_dfs(G, V)) # ['2', '3', '1', '4']
+
+print(topo_sort_dfs(G, C_v)) # ['2', '3', '1', '4']
