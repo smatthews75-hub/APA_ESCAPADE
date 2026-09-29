@@ -156,6 +156,11 @@ void solve() {
     int n_; cin >> n_;
     vector<int> A_(n_);
     for (auto &x_ : A_) cin >> x_;
+
+    quickSort(A_, 0, (int)A_.size() - 1);
+    
+    for (auto &x_: A_) cout << x_ << ' ';
+    cout << '\n';
 }
 
 int main() {
