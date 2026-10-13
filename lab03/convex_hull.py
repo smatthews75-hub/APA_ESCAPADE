@@ -9,21 +9,29 @@ def cross(o, a, b):
 
 
 def convex_hull(points):
-    # Pair x[i] with y[i].
-    # points = sorted(set(zip(x, y)))
+    # FIX 1: You MUST sort the points for Andrew's Monotone Chain to work.
+    # Using set() removes duplicate coordinates which can also break the cross product.
+    points = sorted(set(points))
 
-    if len(points) <= 1: return 0.0
+    # FIX 2: Return a tuple to match the unpacking signature in your driver code.
+    if len(points) <= 1: return points, 0.0
 
     lower = []
     for p in points:
-        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0: lower.pop()
+        # Your <= 0 logic here is PERFECT for achieving minimal points. 
+        # Because the points are sorted, collinear points will be tested consecutively
+        # and result in exactly 0, triggering the pop().
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0: 
+            lower.pop()
         lower.append(p)
 
     upper = []
     for p in reversed(points):
-        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0: upper.pop()
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0: 
+            upper.pop()
         upper.append(p)
 
+    # Exclude the last point of each half because it's the first point of the other half
     hull = lower[:-1] + upper[:-1]
 
     perimeter = 0.0
@@ -36,10 +44,16 @@ def convex_hull(points):
 
     return hull, perimeter
 
-N = int(input())
-points = []
-for _ in range(N): points.append(tuple(map(int, map(float, input().split()))))
-hull, perimeter = convex_hull(points)
-print(f"{perimeter:.3f}")
-for h in hull:
-    print(h[0], h[1])
+if __name__ == "__main__":
+    N = int(input())
+    points = []
+    for _ in range(N): 
+        # Note: map(int, map(float, ...)) truncates decimals. 
+        # If your coordinates can contain decimals, use `tuple(map(float, input().split()))` instead.
+        points.append(tuple(map(int, map(float, input().split()))))
+        
+    hull, perimeter = convex_hull(points)
+    
+    print(f"{perimeter:.3f}")
+    for h in hull:
+        print(h[0], h[1])
