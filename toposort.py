@@ -12,7 +12,7 @@ def topo_sort_dfs(G, C_v):
         for u in sorted_neighbors:
             if u not in visited:
                 dfs_visit(u)
-        result.append(v)
+        result.append(v) # WHY PUSH LAST ? THIS MAKES REVERSING MANDATORY ? CAN I PUSH FIRST RIGHT AFTER VISITED
 
     for v in sorted_vertices:
         if v not in visited:
