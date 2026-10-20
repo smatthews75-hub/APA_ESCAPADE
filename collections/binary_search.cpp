@@ -43,8 +43,8 @@ size_t binary_search(const std::vector<T>& array, T target) {
 }
 
 int main() {
-    std::random_device rd;     
-    std::mt19937 gen(rd()); 
+    std::random_device rd;
+    std::mt19937 gen(rd());
     std::uniform_int_distribution<int> randint(-100, 100);
     std::uniform_real_distribution<float> randfloat(-100.0, 100.0);
 

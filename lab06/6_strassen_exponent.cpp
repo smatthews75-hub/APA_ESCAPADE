@@ -15,6 +15,12 @@ struct Matrix {
     inline long long operator()(size_t r, size_t c) const {
         return data[r * n + c];
     }
+
+    Matrix identity_matrix() const {
+        Matrix I(n);
+        for (size_t i = 0; i < n; ++i) I(i, i) = 1;
+        return I;
+    }
 };
 
 Matrix add(const Matrix& A, const Matrix& B) {
@@ -106,15 +112,14 @@ Matrix strassen(const Matrix& A, const Matrix& B) {
 
 // Recursive matrix exponentiation by constant factor (divide and conquer)
 Matrix power(const Matrix& base, long long exp) {
+    if (exp == 0) return base.identity_matrix();
     if (exp == 1) return base;
     
     Matrix half = power(base, exp / 2);
     Matrix half_sq = strassen(half, half);
     
-    if (exp % 2 != 0) {
-        return strassen(half_sq, base);
-    }
-    return half_sq;
+    // mult with base^1 if odd, just return half_sq if even
+    return (exp % 2 != 0) ? strassen(half_sq, base) : half_sq;
 }
 
 // Find the next power of 2 for Strassen's dimensional requirements
