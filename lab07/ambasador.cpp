@@ -133,7 +133,7 @@ void solve() {
     } else {
         auto compCandidate = [](const Candidate &aa, const Candidate &bb){
             if (aa.boy.name == bb.boy.name) {
-                return aa.girl.name <= bb.girl.name;
+                return aa.girl.name < bb.girl.name;
             } else {
                 return aa.boy.name < bb.boy.name;
             }
