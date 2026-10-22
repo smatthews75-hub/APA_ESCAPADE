@@ -98,7 +98,7 @@ void solve() {
         p = {height, name};
     }
     auto compPerson = [](const Person &a, const Person &b){
-        return a.height < b.height;
+        return (a.height == b.height) ? a.name < b.name : a.height < b.height;
     };
 
     quick_sort(boys, compPerson);
@@ -110,17 +110,17 @@ void solve() {
     // cout << "\n" << endl;
     int b = 0, g = 0, size_b = boys.size(), size_g = girls.size();
 
-    float least_diff = 201.0;
+    float least_diff = 1e9;
     vector<Candidate> candidates; candidates.reserve(10);
     while (b < size_b && g < size_g) {
         float boy_height = boys[b].height;
         float girl_height = girls[g].height;
         float diff = abs(boy_height - girl_height);
 
-        if (diff < least_diff) {
+        if (diff < least_diff - 1e-3) {
             least_diff = diff;
             candidates = {{boys[b], girls[g]}};
-        } else if (diff == least_diff) {
+        } else if (abs(diff - least_diff) <= 1e-3) { // diff == least_diff
             candidates.push_back({boys[b], girls[g]});
         }
         if (boy_height < girl_height) {b++; continue;}
