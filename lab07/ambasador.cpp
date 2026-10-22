@@ -99,7 +99,7 @@ void solve() {
     }
     auto compPerson = [](const Person &a, const Person &b){
         return (a.height == b.height) ? a.name < b.name : a.height < b.height;
-    };
+    }; // here a strict equality is alright cuz height is fresh from input conversion, no maxilla truncation from arithmetic
 
     quick_sort(boys, compPerson);
     quick_sort(girls, compPerson);
@@ -131,15 +131,19 @@ void solve() {
     if (candidates.size() == 1) {
         cout << candidates[0].boy.name << " " << candidates[0].girl.name << "\n";
     } else {
-        auto compCandidate = [](const Candidate &aa, const Candidate &bb){
-            if (aa.boy.name == bb.boy.name) {
-                return aa.girl.name < bb.girl.name;
-            } else {
-                return aa.boy.name < bb.boy.name;
-            }
+        auto lessThan = [](const Candidate &aa, const Candidate &bb){
+            return (aa.boy.name == bb.boy.name) ? aa.girl.name < bb.girl.name : aa.boy.name < bb.boy.name;
         };
-        quick_sort(candidates, compCandidate);
-        cout << candidates[0].boy.name << " " << candidates[0].girl.name << "\n";
+
+
+        // This quick_sort is rather an unnecessary n log n for this search for lexicographical ties right ?
+        // quick_sort(candidates, compCandidate);
+        size_t best = 0;
+        size_t n = candidates.size();
+        for (size_t i = 1; i < n; i++) { // replace with O(n) search for best ?
+            if (lessThan(candidates[i], candidates[best])) best = i;
+        }
+        cout << candidates[best].boy.name << " " << candidates[best].girl.name << "\n";
     }
 }
 /*
