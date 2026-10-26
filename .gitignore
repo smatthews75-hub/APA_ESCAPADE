@@ -1,4 +1,5 @@
 .gitignore
+.cph
 thirdparty
 ICPC
 # Byte-compiled / optimized / DLL files
