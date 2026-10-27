@@ -5,6 +5,26 @@ using ll = long long;
 static const ll MOD = 1000000007;
 static const ll D = 256; // 1 Byte char
 
+/*
+Best case: O(n + m). Example: text abcabcabc…, pattern xyz.
+Hashing the pattern and first window costs O(m), and each roll is O(1). 
+Equal hashes occur only at real matches, or not at all.
+No hash ever matches, so nothing is verified. 
+
+Unlike Horspool, it can never go below linear, because it reads every text character to update the hash.
+
+Worst case: O(nm). Text aaaa…a with pattern aaaa…a
+The O(m) verification step runs on many windows. There are two ways to get there:
+Many genuine matches in all-matches mode. 
+Text aaaa…a with pattern aaaa…a verifies every window, and each verification is a full O(m) compare. 
+If you stop at the first match, this input is just O(n + m).
+
+Many hash collisions (spurious hits). 
+Different windows get the same hash, and compare runs until it finds a difference near the end. 
+This needs a tiny modulus or an adversary who knows your base and modulus, for example D = 256 and MOD = 1e9+7. 
+With a prime near 1e9 on ordinary input it essentially never happens. 
+*/
+
 // ---------------------------------------------------------------------------
 // Rabin-Karp string matching (standard polynomial rolling hash)
 //
@@ -54,10 +74,7 @@ void solve() {
     getline(cin, pattern);
     ll n = text.size(), m = pattern.size();
 
-    if (n < m || m == 0) {
-        cout << "no matches\n";
-        return;
-    }
+    if (n < m || m == 0) {cout << "no matches\n"; return;}
 
     // high = D^(m-1) mod MOD. The "weight" of the LEFTMOST character in
     // a window, i.e. what we must subtract when that character leaves.
@@ -75,8 +92,12 @@ void solve() {
         // BUT equal hashes can be two different strings sharing one hash.
         if (window_hash == pattern_hash && text.compare(i, m, pattern) == 0) {
             cout << i << "\n";
+            for (int j = i; j < i + m; j++) {
+                cout << text[j];
+            }
+            cout << "\n";
             match_found = true;
-            return; // comment if needed more than the first match
+            // return; // comment if needed more than the first match
         }
 
         if (i + m < n) {
@@ -93,7 +114,7 @@ void solve() {
             window_hash = (window_hash * D + in_chr) % MOD;
         }
     }
-    if (!match_found) cout << "no matches\n";
+    if (!match_found) {cout << "no matches\n"; return;}
 }
 
 int main() {

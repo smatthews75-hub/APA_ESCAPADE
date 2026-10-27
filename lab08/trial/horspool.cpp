@@ -3,6 +3,25 @@ using namespace std;
 
 using ShiftTable = vector<size_t>;
 
+/*
+Best case: O(n/m). Example: text aaaaaaaaaaaa, pattern bbbb.
+The window’s last character never appears in the pattern, 
+so every shift is the full m and each window costs one comparison.
+The last text character is a, which isn’t in the pattern. 
+It mismatches immediately and shifts by 4, so about n/m comparisons in total.
+If you stop at the first match, an occurrence at index 0 costs only O(m).
+
+Worst case: O(nm). Example: text aaaa…a, pattern baaa…a.
+Every window compares almost the whole pattern, then the shift is only 1.
+The last character a has shift 1 (it occurs in the pattern’s second-to-last position). 
+Each window matches m-1 characters from the right, then fails on the leading b. That is (n−m+1)·m comparisons.
+
+If you print all matches, text aaaa…a with pattern aaaa…a is also O(nm), because every window is a full match.
+
+Average case on typical text is roughly O(n/m), which is why it’s popular. 
+The worst case comes from highly repetitive text and patterns, which do show up in practice, for example in DNA or in repeated log lines.
+*/
+
 ShiftTable create_table(const string &pattern, size_t alphabet_size = 256) {
     size_t m = pattern.size();
     ShiftTable table(256, m);
